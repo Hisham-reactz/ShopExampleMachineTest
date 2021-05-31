@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'products.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:sizer/sizer.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -22,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 // int _selectedIndex = 0;
 
-  bool loaded = false;
+  // bool loaded = false;
 
   dynamic _data = [];
 
@@ -73,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       bottomNavigationBar: ConvexAppBar(
-        height: getScreenHeight(context) / 13,
+        height: 100.h / 13,
         curveSize: 0.0,
         backgroundColor: Colors.white,
         color: Color(0xAABBBBBB),
@@ -94,12 +95,12 @@ class _MyHomePageState extends State<MyHomePage> {
           context: context,
           removeTop: true,
           child: Container(
-              padding: EdgeInsets.all(17),
+              padding: EdgeInsets.all(5.w),
               child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      mainAxisSpacing: 3,
-                      crossAxisSpacing: 3),
+                      mainAxisSpacing: 1.h,
+                      crossAxisSpacing: 1.w),
                   itemCount: _data.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
@@ -120,11 +121,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               aspectRatio: 2 / 1,
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(7.0),
+                              padding: EdgeInsets.all(1.h),
                               child: Text(
                                 _data[index]["title"],
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 8.sp),
                               ),
                             ),
                           ],

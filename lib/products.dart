@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import 'package:sizer/sizer.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
 class ProductsPage extends StatefulWidget {
   ProductsPage({Key? key, required this.data}) : super(key: key);
@@ -14,10 +16,8 @@ class ProductsPage extends StatefulWidget {
   _ProductsPageState createState() => _ProductsPageState();
 }
 
-class _ProductsPageState extends State<ProductsPage>
-    with TickerProviderStateMixin {
-  int _selectedIndex = 0;
-  bool loaded = false;
+class _ProductsPageState extends State<ProductsPage> {
+  // bool loaded = false;
 
   dynamic subcats = [];
 
@@ -37,12 +37,6 @@ class _ProductsPageState extends State<ProductsPage>
     });
 
     subcats.length > 0 ? fetchProducts(subcats[0]["id"]) : '';
-  }
-
-  void _onItemTapped(index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   fetchProducts(id) async {
@@ -127,44 +121,46 @@ class _ProductsPageState extends State<ProductsPage>
           style: TextStyle(color: Colors.black),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: ConvexAppBar(
+        height: 100.h / 13,
+        curveSize: 0.0,
+        backgroundColor: Colors.white,
+        color: Color(0xAABBBBBB),
+        activeColor: Color(0xAAD43B56),
+        items: [
+          TabItem(icon: Icons.home_outlined),
+          TabItem(
+            icon: Icons.grid_view_outlined,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view),
-            label: 'Category',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Cart',
-          ),
+          TabItem(icon: Icons.shopping_cart_outlined),
+          TabItem(icon: Icons.favorite_outline),
+          TabItem(icon: Icons.money),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+        initialActiveIndex: 2, //optional, default as 0
+        onTap: (int i) => print('click index=$i'),
       ),
       body: MediaQuery.removePadding(
           context: context,
           removeTop: true,
           child: Column(children: [
             SizedBox(
-              height: 13,
+              height: 1.h,
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: ListView(
-                  padding: EdgeInsets.all(3),
+                  padding: EdgeInsets.all(1.w),
                   scrollDirection: Axis.horizontal,
                   children: <Widget>[
                     Row(children: <Widget>[
+                      SizedBox(
+                        width: 3.w,
+                      ),
                       ToggleButtons(
                         fillColor: Color(0xAAE94257),
                         children: subcats
                             .map<Widget>((d) => Padding(
-                                  padding: EdgeInsets.all(13),
+                                  padding: EdgeInsets.all(3.w),
                                   child: Text(d["title"],
                                       style: TextStyle(
                                         color: Colors.black,
@@ -191,23 +187,26 @@ class _ProductsPageState extends State<ProductsPage>
                   ]),
             ),
             Expanded(
-                flex: 13,
+                flex: 20,
                 child: Container(
-                    padding: EdgeInsets.all(7),
+                    padding: EdgeInsets.all(1.w),
                     child: _data.length == 0
                         ? Center(child: Text('No Products'))
                         : GridView.builder(
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
-                                    mainAxisSpacing: 3,
-                                    crossAxisSpacing: 3),
+                                    mainAxisSpacing: 1.h,
+                                    crossAxisSpacing: 1.w),
                             itemCount: _data.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: <Widget>[
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
                                   Expanded(
-                                    flex: 15,
+                                    flex: 10,
                                     child: Image.network(
                                         _data[index]["thumb_url"],
                                         fit: BoxFit.contain),
@@ -215,23 +214,27 @@ class _ProductsPageState extends State<ProductsPage>
                                   Expanded(
                                       flex: 5,
                                       child: Padding(
-                                        padding: const EdgeInsets.all(7.0),
+                                        padding: EdgeInsets.all(1.w),
                                         child: Text(
                                           _data[index]["title"],
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.black),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 8.sp),
                                         ),
                                       )),
                                   Expanded(
-                                      flex: 5,
+                                      flex: 2,
                                       child: Padding(
-                                        padding: const EdgeInsets.all(7.0),
+                                        padding: EdgeInsets.all(1.w),
                                         child: Text(
                                           'RS ' +
                                               _data[index]["selected_quantity"]
                                                   ["real_price"],
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(color: Colors.black),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 8.sp),
                                         ),
                                       )),
                                 ],
