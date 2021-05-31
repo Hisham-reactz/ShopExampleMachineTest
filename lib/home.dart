@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _data = responseJson["data"]["categories"];
+      // ignore: unnecessary_statements
       _data == null ? _data = [] : '';
     });
 

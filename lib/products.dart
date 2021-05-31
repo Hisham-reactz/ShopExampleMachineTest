@@ -36,6 +36,7 @@ class _ProductsPageState extends State<ProductsPage> {
       subcats = widget.data["sub_categories"];
     });
 
+    // ignore: unnecessary_statements
     subcats.length > 0 ? fetchProducts(subcats[0]["id"]) : '';
   }
 
@@ -60,6 +61,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
     setState(() {
       _data = responseJson?["data"]?["results"];
+      // ignore: unnecessary_statements
       _data == null ? _data = [] : '';
     });
 
