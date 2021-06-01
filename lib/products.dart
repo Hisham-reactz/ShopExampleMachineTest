@@ -17,7 +17,9 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  // bool loaded = false;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+// bool loaded = false;
 
   dynamic subcats = [];
 
@@ -27,7 +29,6 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   void initState() {
-    // print(widget.data);
     super.initState();
 
     setState(() {
@@ -79,21 +80,8 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
-        // bottom:
-        // TabBar(
-        //   controller: _tabController,
-        //   tabs: subcats
-        //       .map<Widget>(
-        //         (d) => Tab(
-        //           icon: Text(d["title"],
-        //               style: TextStyle(
-        //                 color: Colors.black,
-        //               )),
-        //         ),
-        //       )
-        //       .toList(),
-        // ),
         actions: [
           IconButton(
               onPressed: () {},
@@ -141,108 +129,111 @@ class _ProductsPageState extends State<ProductsPage> {
         initialActiveIndex: 2, //optional, default as 0
         onTap: (int i) => print('click index=$i'),
       ),
-      body: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: Column(children: [
-            SizedBox(
-              height: 1.h,
-            ),
-            Expanded(
-              flex: 2,
-              child: ListView(
-                  padding: EdgeInsets.all(1.w),
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    Row(children: <Widget>[
-                      SizedBox(
-                        width: 3.w,
-                      ),
-                      ToggleButtons(
-                        fillColor: Color(0xAAE94257),
-                        children: subcats
-                            .map<Widget>((d) => Padding(
-                                  padding: EdgeInsets.all(3.w),
-                                  child: Text(d["title"],
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      )),
-                                ))
-                            .toList(),
-                        onPressed: (int index) {
-                          setState(() {
-                            for (int buttonIndex = 0;
-                                buttonIndex < isSelected.length;
-                                buttonIndex++) {
-                              if (buttonIndex == index) {
-                                fetchProducts(subcats[index]["id"]);
-                                isSelected[buttonIndex] = true;
-                              } else {
-                                isSelected[buttonIndex] = false;
-                              }
-                            }
-                          });
-                        },
-                        isSelected: isSelected,
-                      )
-                    ])
-                  ]),
-            ),
-            Expanded(
-                flex: 20,
-                child: Container(
-                    padding: EdgeInsets.all(1.w),
-                    child: _data.length == 0
-                        ? Center(child: Text('No Products'))
-                        : GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisSpacing: 1.h,
-                                    crossAxisSpacing: 1.w),
-                            itemCount: _data.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
-                                  Expanded(
-                                    flex: 10,
-                                    child: Image.network(
-                                        _data[index]["thumb_url"],
-                                        fit: BoxFit.contain),
-                                  ),
-                                  Expanded(
-                                      flex: 5,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(1.w),
-                                        child: Text(
-                                          _data[index]["title"],
-                                          textAlign: TextAlign.center,
+      body: SafeArea(
+          child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: Column(children: [
+                SizedBox(
+                  height: 1.h,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: ListView(
+                      padding: EdgeInsets.all(1.w),
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        Row(children: <Widget>[
+                          SizedBox(
+                            width: 3.w,
+                          ),
+                          ToggleButtons(
+                            fillColor: Color(0xAAE94257),
+                            children: subcats
+                                .map<Widget>((d) => Padding(
+                                      padding: EdgeInsets.all(3.w),
+                                      child: Text(d["title"],
                                           style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 8.sp),
+                                            color: Colors.black,
+                                          )),
+                                    ))
+                                .toList(),
+                            onPressed: (int index) {
+                              setState(() {
+                                for (int buttonIndex = 0;
+                                    buttonIndex < isSelected.length;
+                                    buttonIndex++) {
+                                  if (buttonIndex == index) {
+                                    fetchProducts(subcats[index]["id"]);
+                                    isSelected[buttonIndex] = true;
+                                  } else {
+                                    isSelected[buttonIndex] = false;
+                                  }
+                                }
+                              });
+                            },
+                            isSelected: isSelected,
+                          )
+                        ])
+                      ]),
+                ),
+                Expanded(
+                    flex: 20,
+                    child: Container(
+                        padding: EdgeInsets.all(1.w),
+                        child: _data.length == 0
+                            ? Center(child: Text('No Products'))
+                            : GridView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 1,
+                                        mainAxisSpacing: 1.h,
+                                        crossAxisSpacing: 1.w),
+                                itemCount: _data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Expanded(
+                                        child: Image.network(
+                                          _data[index]["thumb_url"],
+                                          width: 100,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.15,
+                                          fit: BoxFit.contain,
                                         ),
-                                      )),
-                                  Expanded(
-                                      flex: 2,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(1.w),
-                                        child: Text(
-                                          'RS ' +
-                                              _data[index]["selected_quantity"]
-                                                  ["real_price"],
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 8.sp),
-                                        ),
-                                      )),
-                                ],
-                              );
-                            })))
-          ])),
+                                      ),
+                                      Text(
+                                        _data[index]["title"],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 8.sp),
+                                      ),
+                                      Text(
+                                        'RS ' +
+                                            _data[index]["selected_quantity"]
+                                                ["real_price"],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 8.sp),
+                                      )
+                                    ],
+                                  );
+                                })))
+              ]))),
     );
   }
 }

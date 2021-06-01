@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'products.dart';
@@ -19,17 +18,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late Future categories;
-
-// int _selectedIndex = 0;
-
-  // bool loaded = false;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   dynamic _data = [];
 
   @override
   void initState() {
-    categories = fetchCategory();
+    fetchCategory();
     super.initState();
   }
 
@@ -66,6 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search,
+                color: Colors.black,
+              ))
+        ],
         backgroundColor: Colors.white,
         foregroundColor: Color(0xAAF9B5C2),
         shadowColor: Color(0xAAF9B5C2),
@@ -89,52 +92,61 @@ class _MyHomePageState extends State<MyHomePage> {
           TabItem(icon: Icons.favorite_outline),
           TabItem(icon: Icons.money),
         ],
-        initialActiveIndex: 2, //optional, default as 0
+        initialActiveIndex: 1, //optional, default as 0
         onTap: (int i) => print('click index=$i'),
       ),
-      body: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: Container(
-              padding: EdgeInsets.all(5.w),
-              child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 1.h,
-                      crossAxisSpacing: 1.w),
-                  itemCount: _data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductsPage(data: _data[index])),
-                        )
-                      },
-                      child: Card(
-                        child: Column(
-                          children: <Widget>[
-                            AspectRatio(
-                              child: Image.network(_data[index]["image"],
-                                  fit: BoxFit.contain),
-                              aspectRatio: 2 / 1,
+      body: SafeArea(
+          child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: Container(
+                  padding: EdgeInsets.all(1.w),
+                  child: GridView.builder(
+                      padding: EdgeInsets.zero,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1,
+                          mainAxisSpacing: 1.h,
+                          crossAxisSpacing: 1.w),
+                      itemCount: _data.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductsPage(data: _data[index])),
+                            )
+                          },
+                          child: Card(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Image.network(
+                                    _data[index]["image"],
+                                    fit: BoxFit.contain,
+                                    width: 100,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.15,
+                                  ),
+                                ),
+                                Text(
+                                  _data[index]["title"],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11.sp),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.all(1.h),
-                              child: Text(
-                                _data[index]["title"],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 8.sp),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }))),
+                          ),
+                        );
+                      })))),
     );
   }
 }
